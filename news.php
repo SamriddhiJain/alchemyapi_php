@@ -13,7 +13,45 @@
 	curl_close($ch);
 
 	// now, process the JSON string
-	echo $body;
+	//echo $body;
+	//var_dump(json_decode($body));
 	$json = json_decode($body);
-	//echo $json;
+	//var_dump($json);
+
+	if ($json->responseStatus == 200) {
+		$results=$json->responseData->results;
+		//var_dump($results);
+		echo PHP_EOL;
+		echo '## Links ##', PHP_EOL;
+		foreach ($results as $var) {
+			
+			echo 'Title: ', $var->titleNoFormatting, PHP_EOL;
+			echo 'Published Date: ', $var->publishedDate, PHP_EOL;
+			echo 'Publisher: ', $var->publisher, PHP_EOL;
+			echo 'URL: ', $var->url, PHP_EOL;	
+			//echo 'Content: ', $var->content, PHP_EOL;		
+			
+			echo PHP_EOL;
+			echo PHP_EOL;
+
+			//related stories
+			$related = (isset($var->relatedStories) ? $var->relatedStories : false);
+			if($related){
+
+				foreach ($related as $var2) {
+				
+					echo 'Title: ', $var2->titleNoFormatting, PHP_EOL;
+					echo 'Published Date: ', $var2->publishedDate, PHP_EOL;
+					echo 'Publisher: ', $var2->publisher, PHP_EOL;
+					echo 'URL: ', $var2->url, PHP_EOL;	
+					//echo 'Content: ', $var->content, PHP_EOL;		
+					
+					echo PHP_EOL;
+					echo PHP_EOL;
+				}
+			}
+		}
+	} else {
+		echo 'Error in the news extraction ', $json->responseDetails;
+	}
 ?>
